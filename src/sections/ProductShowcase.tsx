@@ -8,11 +8,20 @@ import { useRef } from "react"
 
 export const ProductShowcase = () => {
   const sectionRef = useRef(null)
+  const productRef = useRef(null)
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start end", "end start"],
   })
-  const translateY = useTransform(scrollYProgress, [0, 1], [180, -180])
+  const { scrollYProgress: productYProgress } = useScroll({
+    target: productRef,
+    offset: ["start end", "end start"],
+  })
+
+  const rotateX = useTransform(productYProgress, [0, 0.6], [60, 1])
+  const opacity = useTransform(productYProgress, [0, 0.4], [0.1, 1])
+
+  const translateY = useTransform(scrollYProgress, [0, 1], [150, -150])
   const rotate = useTransform(scrollYProgress, [0, 1], [30, -360])
   return (
     <section
@@ -32,7 +41,15 @@ export const ProductShowcase = () => {
             website in minutes, using this template.
           </p>
         </div>
-        <div className="relative">
+        <motion.div
+          className="relative"
+          ref={productRef}
+          style={{
+            opacity,
+            rotateX,
+            transformPerspective: "900px",
+          }}
+        >
           <Image src={productImg} alt="Product image" className="mt-10" />
           <motion.img
             src={pyramidImg.src}
@@ -50,7 +67,7 @@ export const ProductShowcase = () => {
             className="hidden md:block absolute bottom-24 -left-36"
             style={{ translateY, rotate }}
           />
-        </div>
+        </motion.div>
       </div>
     </section>
   )
